@@ -1,4 +1,5 @@
-import {Entity, PrimaryGeneratedColumn, Column} from "typeorm";
+import {Entity, PrimaryGeneratedColumn, Column, OneToMany} from "typeorm";
+import { Category } from "./Category";
 
 @Entity()
 export class Establishment {
@@ -20,4 +21,7 @@ export class Establishment {
 
     @Column()
     password: string;
+
+    @OneToMany(() => Category, category => category.establishment)
+    categories: Category[];
 }

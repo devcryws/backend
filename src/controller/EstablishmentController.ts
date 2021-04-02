@@ -2,10 +2,12 @@ import {getRepository} from "typeorm";
 import {NextFunction, Request, Response} from "express";
 import {Establishment} from "../entity/Establishment";
 import {Auth} from "../services/Auth/Auth";
+import { Category } from "../entity/Category";
 
 export class EstablishmentController {
 
     private establishmentRepository = getRepository(Establishment);
+    private categoryRepository = getRepository(Category);
 
     async all(request: Request, response: Response, next: NextFunction) {
         return this.establishmentRepository.find();
@@ -21,13 +23,21 @@ export class EstablishmentController {
         let userName = await this.establishmentRepository.findOne({name: data.name});
         let userEmail = await this.establishmentRepository.findOne({email: data.email});
         if(userName || userEmail)
-            response.status(500).send("User already exists, try another name and/or another email.")
+            response.status(409).send("User already exists, try another name and/or another email.")
         else{
             const auth = new Auth();
 
             data.password = auth.passwordEncrypt(data.password);
 
             let establishmentRes = await this.establishmentRepository.save(data);
+console.log(establishmentRes)
+            // init Category table
+            await this.categoryRepository.save({
+                name: "Complementos",
+                color: "#f5ed0c",
+                imageBGUrl: "",
+                establishment: establishmentRes
+            });
 
             const token = auth.createToken(establishmentRes.id);
 
@@ -37,7 +47,12 @@ export class EstablishmentController {
 
     async remove(request: Request, response: Response, next: NextFunction) {
         let establishmentToRemove = await this.establishmentRepository.findOne(request.params.id);
-        await this.establishmentRepository.remove(establishmentToRemove);
+        if(establishmentToRemove){
+            await this.establishmentRepository.remove(establishmentToRemove);
+            response.status(204)
+        }else
+            response.status(404)
+        
     }
 
     async login(request: Request, response: Response, next: NextFunction){

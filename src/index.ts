@@ -4,8 +4,10 @@ import * as express from "express";
 import * as bodyParser from "body-parser";
 import {Request, Response} from "express";
 import {Routes} from "./routes";
-import {Establishment} from "./entity/Establishment";
 import {Auth} from "./services/Auth/Auth"
+import { Category } from "./entity/Category";
+import {Establishment} from "./entity/Establishment";
+
 require('dotenv').config();
 
 const auth = new Auth();
@@ -38,14 +40,15 @@ createConnection().then(async connection => {
 
     // start express server
     app.listen(3000);
+    
+    connection.manager.create(Establishment); 
+    connection.manager.create(Category); 
 
     // insert new users for test
-    // await connection.manager.save(connection.manager.create(Establishment, {
-    //     name: "Pizzaria do Pedro",
-    //     logoUrl: "https://img2.gratispng.com/20180215/xzq/kisspng-pizza-pizza-logo-pizza-icon-5a857cee4496c8.044598621518697710281.jpg",
-    //     address: "Rua inventada,123, Centro - Itanhaem - SP",
-    //     email: "pizzariapedro@gmail.com",
-    //     password: "12345678"
+    // await connection.manager.save(connection.manager.create(Category, {
+    //     name: "Complementos",
+    //     color: "https://img2.gratispng.com/20180215/xzq/kisspng-pizza-pizza-logo-pizza-icon-5a857cee4496c8.044598621518697710281.jpg",
+    //     imageBGUrl: "Rua inventada,123, Centro - Itanhaem - SP"
     // }));
 
     console.log("Express server has started on port 3000. Open http://localhost:3000/users to see results");
