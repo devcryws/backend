@@ -1,5 +1,6 @@
-import {Entity, PrimaryGeneratedColumn, Column, ManyToOne} from "typeorm";
+import {Entity, PrimaryGeneratedColumn, Column, ManyToOne, OneToMany} from "typeorm";
 import { Establishment } from "./Establishment";
+import { Complement } from "./Complement";
 
 @Entity()
 export class Category {
@@ -18,4 +19,7 @@ export class Category {
 
     @ManyToOne(() => Establishment, establishment => establishment.categories)
     establishment: Establishment;
+
+    @OneToMany(() => Complement, complement => complement.category)
+    complements: Complement[];
 }

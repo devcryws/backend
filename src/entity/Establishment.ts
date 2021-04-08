@@ -1,5 +1,6 @@
 import {Entity, PrimaryGeneratedColumn, Column, OneToMany} from "typeorm";
 import { Category } from "./Category";
+import { Complement } from "./Complement";
 
 @Entity()
 export class Establishment {
@@ -24,4 +25,8 @@ export class Establishment {
 
     @OneToMany(() => Category, category => category.establishment)
     categories: Category[];
+
+    @OneToMany(() => Complement, complement => complement.establishment)
+    complements: Complement[];
 }
+

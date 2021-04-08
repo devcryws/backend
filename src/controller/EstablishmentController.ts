@@ -30,7 +30,6 @@ export class EstablishmentController {
             data.password = auth.passwordEncrypt(data.password);
 
             let establishmentRes = await this.establishmentRepository.save(data);
-console.log(establishmentRes)
             // init Category table
             await this.categoryRepository.save({
                 name: "Complementos",
