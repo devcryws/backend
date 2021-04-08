@@ -10,11 +10,18 @@ export class CategoryController {
     private establishmentRepository = getRepository(Establishment);
 
     async all(request: Request, response: Response, next: NextFunction) {
-        return this.categoryRepository.find({ establishment: request.userId });
+                const establishment = await this.establishmentRepository.findOne(request.userId)
+
+        return this.categoryRepository.find({ establishment});
+
     }
 
     async one(request: Request, response: Response, next: NextFunction) {
-        return this.categoryRepository.findOne(request.params.id);
+        const category = await this.categoryRepository.findOne(request.params.id)
+        if(category.establishment != request.userId)
+            response.status(404).send("Not Found");
+        else
+            return this.categoryRepository.findOne(request.params.id);
     }
 
     async save(request: Request, response: Response, next: NextFunction) {

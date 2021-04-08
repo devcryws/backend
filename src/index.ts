@@ -1,22 +1,23 @@
+require('dotenv').config();
+
 import "reflect-metadata";
 import {createConnection} from "typeorm";
 import * as express from "express";
 import * as bodyParser from "body-parser";
+const morgan = require('morgan')
 import {Request, Response} from "express";
 import {Routes} from "./routes";
 import {Auth} from "./services/Auth/Auth"
 import { Category } from "./entity/Category";
 import {Establishment} from "./entity/Establishment";
-
-require('dotenv').config();
-
+import { connectionConfig } from "./database/connectionConfig";
 const auth = new Auth();
-createConnection().then(async connection => {
+createConnection(connectionConfig).then(async connection => {
 
     // create express app
     const app = express();
     app.use(bodyParser.json());
-
+    app.use(morgan('dev'))
     app.use(auth.verifyToken, function(req, res, next){
         console.log('Alguém está fazendo requisição a api ;)');
         next();
@@ -34,7 +35,6 @@ createConnection().then(async connection => {
             }
         });
     });
-
     // setup express app here
     // ...
 

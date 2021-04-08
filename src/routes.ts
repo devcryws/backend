@@ -1,5 +1,6 @@
 import {EstablishmentController} from "./controller/EstablishmentController";
 import {CategoryController} from "./controller/CategoryController";
+import {ComplementController} from "./controller/ComplementController";
 
 export const Routes = [{
     method: "get",
@@ -50,5 +51,30 @@ export const Routes = [{
     method: "delete",
     route: "/categories/:id",
     controller: CategoryController,
+    action: "remove"
+},{
+    method: "get",
+    route: "/complements",
+    controller: ComplementController,
+    action: "all"
+}, {
+    method: "get",
+    route: "/complements/:id",
+    controller: ComplementController,
+    action: "one"
+}, {
+    method: "post",
+    route: "/complements",
+    controller: ComplementController,
+    action: "save"
+},{
+    method: "put",
+    route: "/complements/:id",
+    controller: ComplementController,
+    action: "update"
+}, {
+    method: "delete",
+    route: "/complements/:id",
+    controller: ComplementController,
     action: "remove"
 }];
