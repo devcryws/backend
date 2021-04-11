@@ -1,7 +1,7 @@
 import {getRepository} from "typeorm";
 import {NextFunction, Request, Response} from "express";
 import {Category} from "../entity/Category";
-import {Auth} from "../services/Auth/Auth";
+import {Auth, RequestAuth} from "../services/Auth/Auth";
 import { Establishment } from "../entity/Establishment";
 
 export class CategoryController {
@@ -9,22 +9,23 @@ export class CategoryController {
     private categoryRepository = getRepository(Category);
     private establishmentRepository = getRepository(Establishment);
 
-    async all(request: Request, response: Response, next: NextFunction) {
-                const establishment = await this.establishmentRepository.findOne(request.userId)
+    async all(request: RequestAuth, response: Response, next: NextFunction) {
+        const establishment = await this.establishmentRepository.findOne(request.userId)
 
         return this.categoryRepository.find({ establishment});
-
     }
 
-    async one(request: Request, response: Response, next: NextFunction) {
+    async one(request: RequestAuth, response: Response, next: NextFunction) {
         const category = await this.categoryRepository.findOne(request.params.id)
-        if(category.establishment != request.userId)
+        const establishment = await this.establishmentRepository.findOne(request.userId)
+
+        if(category.establishment != establishment)
             response.status(404).send("Not Found");
         else
             return this.categoryRepository.findOne(request.params.id);
     }
 
-    async save(request: Request, response: Response, next: NextFunction) {
+    async save(request: RequestAuth, response: Response, next: NextFunction) {
         let data = request.body;
         const establishment = await this.establishmentRepository.findOne(request.userId)
 
@@ -40,25 +41,26 @@ export class CategoryController {
             response.status(200).send("Category saved")
         }     
     }
-    async update(request: Request, response: Response, next: NextFunction) {       
+    async update(request: RequestAuth, response: Response, next: NextFunction) {       
         let data = request.body;
         const establishment = await this.establishmentRepository.findOne(request.userId);
-
-        let categoryToUpdate = await this.categoryRepository.findOne({id: request.params.id, establishment });
+        const categoryId:number = parseInt(request.params.id)
+        let categoryToUpdate = await this.categoryRepository.findOne(categoryId, {where: {establishment} });
 
         if(categoryToUpdate){
             categoryToUpdate.name = data.name || categoryToUpdate.name ;
             categoryToUpdate.color = data.color || categoryToUpdate.color;
-            categoryToUpdate.imageBGUrl = data.imageBGUrl || categoryToUpdate.imageBGUrl;
+            categoryToUpdate.category_image_url = data.imageBGUrl || categoryToUpdate.category_image_url;
             await this.categoryRepository.save(categoryToUpdate);
             response.status(204).send("Updated category.")
         }else
             response.status(404).send("Category not found.");
     }
 
-    async remove(request: Request, response: Response, next: NextFunction) {       
+    async remove(request: RequestAuth, response: Response, next: NextFunction) {       
         const establishment = await this.establishmentRepository.findOne(request.userId)
-        let categoryToRemove = await this.categoryRepository.findOne({id: request.params.id, establishment });
+        const categoryId:number = parseInt(request.params.id)
+        let categoryToRemove = await this.categoryRepository.findOne(categoryId ,{where: { establishment }});
 
         if(categoryToRemove){
             await this.categoryRepository.remove(categoryToRemove);
