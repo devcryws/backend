@@ -8,12 +8,16 @@ interface payload {
   exp: number 
 }
 
+export interface RequestAuth extends Request{
+    userId?: number
+}
+
 const doNotValidateToken = (req: Request) => {
   return req.originalUrl === '/establishments/login' ||  (req.originalUrl === '/establishments' && req.method == 'POST');
 }
 
 export class Auth {
-  verifyToken(req:Request, res:Response, next:NextFunction){
+  verifyToken(req:RequestAuth, res:Response, next:NextFunction){
     if(doNotValidateToken(req))
       return next();
  

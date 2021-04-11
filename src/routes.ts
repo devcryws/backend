@@ -1,6 +1,7 @@
 import {EstablishmentController} from "./controller/EstablishmentController";
 import {CategoryController} from "./controller/CategoryController";
 import {ComplementController} from "./controller/ComplementController";
+import {ProductController} from "./controller/ProductController";
 
 export const Routes = [{
     method: "get",
@@ -77,4 +78,14 @@ export const Routes = [{
     route: "/complements/:id",
     controller: ComplementController,
     action: "remove"
+},{
+    method: "get",
+    route: "/products",
+    controller: ProductController,
+    action: "all"
+}, {
+    method: "post",
+    route: "/products",
+    controller: ProductController,
+    action: "save"
 }];

@@ -1,6 +1,7 @@
 import {Entity, PrimaryGeneratedColumn, Column, OneToMany} from "typeorm";
 import { Category } from "./Category";
 import { Complement } from "./Complement";
+import { Product } from "./Product";
 
 @Entity()
 export class Establishment {
@@ -8,19 +9,26 @@ export class Establishment {
     @PrimaryGeneratedColumn()
     id: number;
 
-    @Column()
+    @Column({
+      unique: true,
+      nullable: true,
+      length: 40
+    })
     name: string;
 
-    @Column()
+    @Column({nullable: true})
     logoUrl: string;
 
-    @Column()
+    @Column({nullable: true})
     address: string;
 
-    @Column()
+    @Column({
+      unique: true,
+      nullable: true
+    })
     email: string;
 
-    @Column()
+    @Column({nullable: true})
     password: string;
 
     @OneToMany(() => Category, category => category.establishment)
@@ -28,5 +36,8 @@ export class Establishment {
 
     @OneToMany(() => Complement, complement => complement.establishment)
     complements: Complement[];
+
+    @OneToMany(() => Product, product => product.establishment)
+    products: Product[];
 }
 
