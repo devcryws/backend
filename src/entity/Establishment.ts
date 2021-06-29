@@ -2,6 +2,7 @@ import {Entity, PrimaryGeneratedColumn, Column, OneToMany} from "typeorm";
 import { Category } from "./Category";
 import { Complement } from "./Complement";
 import { Product } from "./Product";
+import { Order } from "./Order";
 
 @Entity()
 export class Establishment {
@@ -39,5 +40,8 @@ export class Establishment {
 
     @OneToMany(() => Product, product => product.establishment)
     products: Product[];
+
+    @OneToMany(() => Order, order => order.establishment)
+    orders: Order[];
 }
 
